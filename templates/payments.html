@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{%load static%}
+{%block title %}Payment Record {%endblock title%}
+{% block inner-content %}
+   
+        <div class="container-fluid bg-light">
+            <div class="row justify-content-around" >
+                {%if  not transactions %}
+             <div class="d-flex justify-content-center align-items-center flex-column" style="height: 50vh;">
+                <h3>No Payment Record Found</h3>
+                <p>If you have made a payment, please contant support</p>
+             </div>
+             {%else%}
+           
+
+             <table class="table">
+                <thead>
+                  <tr>
+                    <th>Payment ID</th>
+                    <th>Amount</th>
+                    <th>Date</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {%for trans in transactions%}
+                  <tr>
+                    <td>{{trans.transaction_id}}</td>
+                    <td>#{{trans.amount}}</td>
+                    <td>{{trans.transaction_date}}</td>
+                    <td><label class="badge">{{trans.description}}</label></td>
+                  </tr>
+                  {%endfor%}
+                 
+                </tbody>
+              </table>
+              {%endif%}
+             
+                    
+                    
+    
+                </div>
+          </div>
+
+{% endblock inner-content %}
+
+{%block js%}
+
+{%endblock%}

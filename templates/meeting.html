@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{%load static%}
+{%block title %}Payment Record {%endblock title%}
+{% block inner-content %}
+   
+        <div class="container-fluid bg-light">
+            <div class="row justify-content-around" >
+              <div class="col-md-8 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">
+                            <i class="far fa-futbol"></i>
+                            Activity
+                        </h4>
+                        <p class="card-description">
+                            Meeting activities
+                        </p>
+                        <div class="table-responsive" style="max-height: 80vh; overflow-y: auto;">
+                          <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Weeks</th>
+                                    <th>Present</th>
+                                    <th>Absent</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for meeting in meetings %}
+                                <tr>
+                                    <td><p class="text-center">{{ meeting.week }}</p></td>
+                                    <td>
+                                       <p class="text-center"><i class="
+                                         {% if request.user in meeting.attendees.all %}
+                                         fas fa-check text-success  {% endif %}"></i></p>    
+                                    </td>
+                                    <td>
+                                        
+                                        <p class="text-center"><i class="
+                                          {% if request.user not in meeting.attendees.all %} 
+                                          fas fa-times  text-danger  {% endif %}"></i></p>
+                                       
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                                
+                                <!-- Render remaining meetings as greyed out -->
+                                {% for _ in remaining_meetings %}
+                                <tr>
+                                    <td><p class=" unavailable-week text-center">week??</p></td>
+                                    <td><p class="unavailable-week text-center"><i class="fas text-muted"></i></p></td>
+                                    <td><p class="unavailable-week text-center"><i class="fas text-muted"></i></p></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+    
+                </div>
+          </div>
+
+{% endblock inner-content %}
+
+{%block js%}
+
+{%endblock%}

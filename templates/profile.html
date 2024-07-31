@@ -1,0 +1,198 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}User Profile {% endblock title %}
+{% block inner-content %}
+
+<body class="bg-light">
+    <div class="container-fluid bg-light">
+        <p class=" h5 text-center text-danger">{{message}}</p>
+        <div class="row justify-content-around">
+            <!--start profile card-->
+            <div class="col-md-7 col-sm-12 mt-3">
+                <div class="d-flex flex-column card" style="background-color: #f0f1f2;">
+                    <h2 class="text-center mt-3">Profile</h2>
+                    <div class="d-flex justify-content-center">
+                        <img src="{% if user.picture %}{{ user.picture.url }}{% else %}{% static 'images/faces/face5.jpg' %}{% endif %}" alt="image" width="100px" />
+                    </div>
+                   
+
+                    <form method="POST" action="/profile/save" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="form-group row">
+                        <div class="col-9 mx-auto mt-2">
+                            <input type="file" class="form-control" name="profile_picture" id="picture">
+                        </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="email" class="col-4 col-form-label ml-auto">Username</label>
+                            <input hidden type="text" name="message" class="form-control" placeholder="{{message}}" value="{{message}}" readonly>
+                           
+
+                            <div class="col-8 mr-auto">
+                                <input type="text" class="form-control" id="email" placeholder="{{ user.username }}" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="email" class="col-4 col-form-label ml-auto">Email</label>
+
+                            <div class="col-8 mr-auto">
+                                <input type="text" class="form-control" id="email" placeholder="{{ user.email }}" readonly>
+                            </div>
+                        </div>
+
+                        <div class="form-group row mt-3">
+                            <label for="display_name" class="col-4 col-form-label ml-auto">Name</label>
+
+                            <div class="col-4 mr-auto">
+                                <input type="text" class="form-control" name="display_name" id="display_name" placeholder="First Name" value="{{ user.first_name }}" required>
+                            </div>
+
+                            <div class="col-4 mr-auto">
+                                <input type="text" class="form-control" name="last_name" id="last_name" placeholder="Last Name" value="{{ user.last_name }}" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="phone_number" class="col-4 col-form-label ml-auto">Phone Number</label>
+
+                            <div class="col-8 mr-auto">
+                                <input type="text" class="form-control" name="phone_number" id="phone_number"
+                                 minlength="11" maxlength="11" placeholder="phone number" value="{{ user.phonenumber }}">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="location" class="col-4 col-form-label ml-auto">Location</label>
+
+                            <div class="col-8 mr-auto">
+                                <input type="text" class="form-control" name="location" id="location"  placeholder="14 Ihama Road, GRA, Benin City, Edo State, Nigeria." value="{{ user.location}}" required>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label  for="church_branch" class="col-4 col-form-label ml-auto" >Church Branch</label>
+                          <div class="col-8 mr-auto">
+                            <select name="church_branch" class="form-control col-7 mr-auto" id="church_branch" required>
+                              <option value="{{user.church_branch}}" readonly selected>{{user.church_branch}}</option>
+                              <option value="Evbotubu">Evbotubu</option>
+                              <option value="GRA">GRA</option>
+                              <option value="Sakpoba">Sakpoba</option>
+                              <option value="Italy">Italy</option>
+                              <option value="Uselu">Uselu</option>
+                              <option value="United Kingdom">United Kingdom</option>
+                              <option value="Canada">Canada</option>
+                              <option value="USA">USA</option>
+                            </select>
+                        </div>
+                          </div>
+
+                          <div class="form-group row">
+                            <label class="col-4 col-form-label ml-auto" for="profession">Profession</label>
+                            <div class="col-8 mr-auto">
+                                <select name="profession" class="form-control form-control-lg" id="profession" required>
+                                <option value="" disabled selected>Select Profession</option>
+                                <option value="{{user.profession }}" readonly selected>{{user.profession}}</option>
+                                {% for profession, _ in professions %}
+                                <option value="{{ profession }}">{{ profession }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        </div>  
+                        
+                        <div class="form-group">
+                            <label for="" class="col-12 col-form-label ml-auto"></label> Only change if you want to change password</label>
+                        </div>
+                        <div class="form-group row">
+                            <label for="new_password" class="col-3 col-form-label ml-auto">New Password</label>
+                            <div class="col-6 mr-auto">
+                                <input type="password" class="form-control" name="new_password" id="new_password" placeholder="New Password" value="">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="confirm_password" class="col-3 col-form-label ml-auto">Confirm Password</label>
+                            <div class="col-6 mr-auto">
+                                <input type="password" class="form-control" name="confirm_password" id="confirm_password" placeholder="Confirm Password" value="">
+                                <small id="passwordHelpBlock" class="form-text text-muted"></small>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <button type="submit" class="btn btn-primary col-12" id="saveBtn">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!--end profile card-->
+        </div>
+    </div>
+</body>
+{% endblock inner-content %}
+
+{% block js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const newPasswordInput = document.getElementById('new_password');
+        const confirmPasswordInput = document.getElementById('confirm_password');
+        const saveBtn = document.getElementById('saveBtn');
+        const passwordHelpBlock = document.getElementById('passwordHelpBlock');
+
+        document.getElementById('phone_number').addEventListener('input', function() {
+            // Remove any non-numeric characters
+            this.value = this.value.replace(/\D/g, '');
+
+            // Check if the input length is exactly 11
+            if (this.value.length !== 11) {
+                this.setCustomValidity('Please enter exactly 11 digits.');
+            } else {
+                this.setCustomValidity('');
+            }
+        });
+
+        // Function to check if the password matches and meets the criteria
+        function isValidPassword(password) {
+            // Password must be at least 8 characters long and alphanumeric
+            const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+            return passwordRegex.test(password);
+        }
+
+        // Function to enable/disable save button based on password validation
+        function toggleSaveButton() {
+            const newPassword = newPasswordInput.value;
+            const confirmPassword = confirmPasswordInput.value;
+
+            // Enable save button only if the confirm password matches the new password and new password meets the criteria
+            saveBtn.disabled = !(newPassword === confirmPassword && isValidPassword(newPassword));
+
+            // Show text indicating if the password matches and if it contains alphanumeric
+            if (newPassword === confirmPassword) {
+                passwordHelpBlock.textContent = isValidPassword(newPassword) ? 'Password matches and is alphanumeric' : 'Password matches but must be at least 8 characters long and alphanumeric';
+            } else {
+                passwordHelpBlock.textContent = 'Passwords do not match';
+            }
+        }
+
+        // Event listener for input events on new password field
+        newPasswordInput.addEventListener('input', function() {
+            toggleSaveButton();
+            if (newPasswordInput.value || confirmPasswordInput.value) {
+                saveBtn.disabled = true; // Disable save button if there is any input in either field
+            } else {
+                passwordHelpBlock.textContent = '';
+                saveBtn.disabled = false;
+            }
+        });
+
+        // Event listener for input events on confirm password field
+        confirmPasswordInput.addEventListener('input', function() {
+            toggleSaveButton();
+            if (newPasswordInput.value || confirmPasswordInput.value) {
+                saveBtn.disabled = true; // Disable save button if there is any input in either field
+            } else {
+                saveBtn.disabled = false;
+                passwordHelpBlock.textContent = '';
+            }
+        });
+    });
+
+</script>
+
+{% endblock %}
